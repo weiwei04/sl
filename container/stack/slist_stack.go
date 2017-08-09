@@ -23,11 +23,10 @@ func (s *slistStack) Push(value interface{}) {
 	s.count++
 }
 
-func (s *slistStack) Pop() interface{} {
+func (s *slistStack) Pop() {
 	p := s.next
 	s.next = p.next
 	s.count--
-	return p.value
 }
 
 func (s *slistStack) Top() interface{} {

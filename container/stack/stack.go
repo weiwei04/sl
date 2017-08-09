@@ -2,7 +2,7 @@ package stack
 
 type Stack interface {
 	Push(val interface{})
-	Pop() interface{}
+	Pop()
 	Top() interface{}
 	Size() int
 }

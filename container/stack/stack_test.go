@@ -60,7 +60,8 @@ func TestStack(t *testing.T) {
 				}
 				popSeqs := []int{}
 				for stack.Size() != 0 {
-					popSeqs = append(popSeqs, stack.Pop().(int))
+					popSeqs = append(popSeqs, stack.Top().(int))
+					stack.Pop()
 				}
 				if !reflect.DeepEqual(c.PopSeqs, popSeqs) {
 					t.Error("case:", c.Name, ", stack:", impl.Name)

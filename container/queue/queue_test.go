@@ -41,7 +41,7 @@ func TestQueue(t *testing.T) {
 			Func: NewSListQueue,
 		},
 	} {
-		t.Run("batch", func(t *testing.T) {
+		t.Run("batch: "+impl.Name, func(t *testing.T) {
 			for _, c := range cases {
 				queue := impl.Func()
 				if queue.Size() != 0 {
@@ -65,7 +65,7 @@ func TestQueue(t *testing.T) {
 				}
 			}
 		})
-		t.Run("1by1", func(t *testing.T) {
+		t.Run("1by1: "+impl.Name, func(t *testing.T) {
 			for _, c := range cases {
 				queue := impl.Func()
 				if queue.Size() != 0 {

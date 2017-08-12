@@ -1,6 +1,10 @@
 language: go
+sudo: false
 go:
-  - 1.8
+  - 1.8.x
+
 script:
-  - go version
-  - make test
+  - ./go.test.sh
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

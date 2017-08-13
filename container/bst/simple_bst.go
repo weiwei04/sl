@@ -1,7 +1,5 @@
 package bst
 
-import "fmt"
-
 type simpleBST struct {
 	root    *node
 	count   int
@@ -19,7 +17,6 @@ func (t *simpleBST) Insert(key interface{}, value interface{}) {
 			if t.compare(key, n.key) == Less {
 				if n.left == nil {
 					n.left = &node{key: key, value: value}
-					fmt.Println("n:", n.key.(int), ", ->left:", key.(int))
 					break
 				} else {
 					n = n.left
@@ -27,7 +24,6 @@ func (t *simpleBST) Insert(key interface{}, value interface{}) {
 			} else {
 				if n.right == nil {
 					n.right = &node{key: key, value: value}
-					fmt.Println("n:", n.key.(int), ", ->right:", key.(int))
 					break
 				} else {
 					n = n.right
@@ -35,7 +31,6 @@ func (t *simpleBST) Insert(key interface{}, value interface{}) {
 			}
 		}
 	} else {
-		fmt.Println("root:", key.(int))
 		t.root = &node{key: key, value: value}
 	}
 	t.count++

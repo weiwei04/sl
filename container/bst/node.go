@@ -1,10 +1,6 @@
 package bst
 
-import (
-	"fmt"
-
-	"github.com/moladb/sl/container/stack"
-)
+import "github.com/moladb/sl/container/stack"
 
 type node struct {
 	key   interface{}
@@ -135,28 +131,15 @@ func remove(t *node, compare CompareFunc, key interface{}) (*node, *node) {
 }
 
 func inorderTraverse(n *node, fn TraverseFunc) {
-	var pre *node = n
 	s := stack.NewSliceStack()
 	for s.Size() != 0 || n != nil {
-		//fmt.Println("parent:", pre.key.(int))
-		if pre.right != n {
-			panic("FUCK FUCK")
-		}
-		if pre.right != nil {
-			//n = pre.right
-			fmt.Printf("FUCK FUCK FUCK, pre:%d, pre->right:%p, n:%p\n", pre.key.(int), pre.right, n)
-		}
 		for n != nil {
 			s.Push(n)
 			n = n.left
 		}
-		n := s.Pop().(*node)
+		n = s.Pop().(*node)
 		fn(n.key, n.value)
-		pre = n
 		n = n.right
-		//if n != nil {
-		//	fmt.Printf("cur: %d, pre->right:%p, n:%p\n", pre.key.(int), pre.right, n)
-		//}
 	}
 }
 

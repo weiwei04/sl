@@ -3,7 +3,7 @@ package bst
 import "github.com/moladb/sl/container/stack"
 
 type node struct {
-	key   interface{}
+	//key   interface{}
 	value interface{}
 	left  *node
 	right *node
@@ -26,39 +26,40 @@ func unguardedMax(n *node) *node {
 // output: new-root, n (min)
 func removeMin(n *node) (*node, *node) {
 	root := n
-	var pre *node
+	var parent *node
 	for n.left != nil {
-		pre = n
+		parent = n
 		n = n.left
 	}
-	if pre == nil {
+	if parent == nil {
 		root = n.right
 		// not nessary
 		//n.right = nil
 	} else {
-		pre.left = n.right
+		parent.left = n.right
 	}
 	return root, n
 }
 
 func removeMax(n *node) (*node, *node) {
 	root := n
-	var pre *node
+	var parent *node
 	for n.right != nil {
-		pre = n
+		parent = n
 		n = n.right
 	}
-	if pre == nil {
+	if parent == nil {
 		root = n.left
 		// n.left = nil
 	} else {
-		pre.right = n.left
+		parent.right = n.left
 	}
 	return root, n
 }
 
-func find(n *node, compare CompareFunc, value interface{}) *node {
+func find(n *node, less LessFunc, value interface{}) *node {
 	for n != nil {
+		if less()
 		res := compare(value, n.value)
 		if res == Equal {
 			return n

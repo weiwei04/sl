@@ -1,19 +1,14 @@
 package bst
 
-type CompareResultType int
+type KeyCompareFunc func(leftKey interface{}, rightKey interface{}) bool
 
-const (
-	Less   CompareResultType = -1
-	Equal  CompareResultType = 0
-	Greate CompareResultType = 1
-)
-
-type CompareFunc func(left interface{}, right interface{}) CompareResultType
+type KeyFunc func(value interface{}) interface{}
 
 type TraverseFunc func(key interface{}, value interface{})
 
 type BST interface {
-	Insert(key interface{}, value interface{})
+	InsertUnique(value interface{}) bool
+	InsertEqual(value interface{})
 	Remove(key interface{})
 	Have(key interface{}) bool
 	Find(key interface{}) interface{}

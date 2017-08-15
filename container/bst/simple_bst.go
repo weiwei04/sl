@@ -1,29 +1,61 @@
 package bst
 
 type simpleBST struct {
-	root    *node
-	count   int
-	compare CompareFunc
+	root       *node
+	count      int
+	keyOfValue KeyFunc
+	less       KeyCompareFunc
 }
 
-func NewSimpleBST(compare CompareFunc) BST {
-	return &simpleBST{compare: compare}
+func NewSimpleBST(keyOfValue KeyFunc, less KeyCompareFunc) BST {
+	return &simpleBST{keyOfValue: keyOfValue, less: less}
 }
 
-func (t *simpleBST) Insert(key interface{}, value interface{}) {
+func (t *simpleBST) InsertUnique(value interface{}) bool {
 	if t.root != nil {
 		n := t.root
 		for true {
-			if t.compare(key, n.key) == Less {
+			if t.less(t.keyOfValue(value), t.keyOfValue(n.value)) {
 				if n.left == nil {
-					n.left = &node{key: key, value: value}
+					n.left = &node{value: value}
+					t.count++
+					return true
+				} else {
+					n = n.left
+				}
+			} else if t.less(t.keyOfValue(n.value), t.keyOfValue(value)) {
+				if n.right == nil {
+					n.right = &node{value: value}
+					t.count++
+					return true
+				} else {
+					n = n.right
+				}
+			} else {
+				return false
+			}
+		}
+	} else {
+		t.root = &node{value: value}
+		t.count++
+		return true
+	}
+}
+
+func (t *simpleBST) InsertEqual(value interface{}) {
+	if t.root != nil {
+		n := t.root
+		for true {
+			if t.less(t.keyOfValue(value), t.keyOfValue(n.value)) {
+				if n.left == nil {
+					n.left = &node{value: value}
 					break
 				} else {
 					n = n.left
 				}
 			} else {
 				if n.right == nil {
-					n.right = &node{key: key, value: value}
+					n.right = &node{value: value}
 					break
 				} else {
 					n = n.right
@@ -31,25 +63,25 @@ func (t *simpleBST) Insert(key interface{}, value interface{}) {
 			}
 		}
 	} else {
-		t.root = &node{key: key, value: value}
+		t.root = &node{value: value}
 	}
 	t.count++
 }
 
 func (t *simpleBST) Remove(key interface{}) {
 	var n *node
-	t.root, n = remove(t.root, t.compare, key)
+	t.root, n = remove(t.root, t.keyOfValue, t.less, key)
 	if n != nil {
 		t.count--
 	}
 }
 
 func (t *simpleBST) Have(key interface{}) bool {
-	return find(t.root, t.compare, key) != nil
+	return find(t.root, t.keyOfValue, t.less, key) != nil
 }
 
 func (t *simpleBST) Find(key interface{}) interface{} {
-	node := find(t.root, t.compare, key)
+	node := find(t.root, t.keyOfValue, t.less, key)
 	if node != nil {
 		return node.value
 	}
@@ -57,11 +89,11 @@ func (t *simpleBST) Find(key interface{}) interface{} {
 }
 
 func (t *simpleBST) Min() interface{} {
-	return unguardedMin(t.root).key
+	return unguardedMin(t.root).value
 }
 
 func (t *simpleBST) Max() interface{} {
-	return unguardedMax(t.root).key
+	return unguardedMax(t.root).value
 }
 
 func (t *simpleBST) Size() int {

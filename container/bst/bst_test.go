@@ -13,29 +13,36 @@ func TestBST(t *testing.T) {
 		Min    int
 		Max    int
 	}{
-		//{
-		//	Name:   "Empty",
-		//	Input:  []int{},
-		//	Expect: []int{},
-		//},
-		//{
-		//	Name:   "1Item",
-		//	Input:  []int{1},
-		//	Expect: []int{1},
-		//	Min:    1,
-		//	Max:    1,
-		//},
-		//{
-		//	Name:   "OrderedItems",
-		//	Input:  []int{1, 2, 3, 4, 5},
-		//	Expect: []int{1, 2, 3, 4, 5},
-		//	Min:    1,
-		//	Max:    5,
-		//},
+		{
+			Name:   "Empty",
+			Input:  []int{},
+			Expect: []int{},
+		},
+		{
+			Name:   "1Item",
+			Input:  []int{1},
+			Expect: []int{1},
+			Min:    1,
+			Max:    1,
+		},
+		{
+			Name:   "OrderedItems",
+			Input:  []int{1, 2, 3, 4, 5},
+			Expect: []int{1, 2, 3, 4, 5},
+			Min:    1,
+			Max:    5,
+		},
 		{
 			Name:   "UnorderedItems",
 			Input:  []int{5, 4, 2, 3, 1},
 			Expect: []int{1, 2, 3, 4, 5},
+			Min:    1,
+			Max:    5,
+		},
+		{
+			Name:   "DuplicateItems",
+			Input:  []int{5, 4, 3, 2, 3, 1},
+			Expect: []int{1, 2, 3, 3, 4, 5},
 			Min:    1,
 			Max:    5,
 		},

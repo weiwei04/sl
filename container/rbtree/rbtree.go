@@ -18,9 +18,9 @@ type Element interface {
 }
 
 type RBTree struct {
-	root  *node
-	comp  CompareFunc
-	count int
+	root *node
+	comp CompareFunc
+	size int
 }
 
 type Iterator struct {
@@ -86,16 +86,90 @@ func (t *RBTree) Last() *Iterator {
 }
 
 func (t *RBTree) InsertEqual(e Element) {
-	insertEqual(&t.root, t.comp, e)
-	t.count++
+	var (
+		parent *node
+		equal  int
+	)
+	n := t.root
+	for n != nil {
+		parent = n
+		equal = t.comp(e.Key(), n.e.Key())
+		if equal < 0 {
+			n = n.left
+		} else {
+			n = n.right
+		}
+	}
+	if parent == nil {
+		t.root = &node{e: e}
+	} else {
+		if equal < 0 {
+			parent.left = &node{parent: parent, e: e}
+		} else {
+			parent.right = &node{parent: parent, e: e}
+		}
+	}
+	t.size++
 }
 
 func (t *RBTree) InsertUnique(e Element) bool {
-	_, ok := insertUnique(&t.root, t.comp, e)
-	if ok {
-		t.count++
+	var parent *node
+	var equal int
+	n := t.root
+	for n != nil {
+		parent = n
+		equal = t.comp(e.Key(), n.e.Key())
+		if equal < 0 {
+			n = n.left
+		} else if equal > 0 {
+			n = n.right
+		} else {
+			return false
+		}
 	}
-	return ok
+	if parent == nil {
+		t.root = &node{e: e, black: true}
+	} else {
+		if equal < 0 {
+			parent.left = &node{parent: parent, e: e}
+		} else {
+			parent.right = &node{parent: parent, e: e}
+		}
+		t.rotate(parent)
+	}
+	t.size++
+	return true
+}
+
+func (t *RBTree) rotate(n *node) {
+	for {
+		parent := n.parent
+		oldN := n
+		if isRed(n.right) && !isRed(n.left) {
+			n = rotateLeft(n)
+		}
+		if isRed(n.left) && isRed(n.left.left) {
+			n = rotateRight(n)
+		}
+		if isRed(n.left) && isRed(n.right) {
+			n = flipColor(n)
+		}
+		if parent == nil {
+			t.root = n
+			t.root.black = true
+		} else if parent.left == oldN {
+			parent.left = n
+		} else {
+			parent.right = n
+		}
+		if parent == nil {
+			break
+		}
+		if !isRed(parent) {
+			break
+		}
+		n = parent
+	}
 }
 
 func (t *RBTree) Max() Element {
@@ -120,16 +194,16 @@ func (t *RBTree) RemoveByKey(key interface{}) {
 		return
 	}
 	t.root = remove(t.root, n)
-	t.count--
+	t.size--
 }
 
 func (t *RBTree) RemoveByIterator(i *Iterator) {
 	t.root = remove(t.root, i.node)
-	t.count--
+	t.size--
 }
 
 func (t *RBTree) Size() int {
-	return t.count
+	return t.size
 }
 
 func (t *RBTree) InorderTraverse(fn func(e Element)) {
@@ -143,4 +217,28 @@ func (t *RBTree) InorderTraverse(fn func(e Element)) {
 		fn(n.e)
 		n = n.right
 	}
+}
+
+// blackEdgesToMin/Max are used to test the tree is
+// balanced at black edges
+func (t *RBTree) blackEdgesToMin() int {
+	n := t.root
+	var c int
+	for ; n.left != nil; n = n.left {
+		if n.black {
+			c++
+		}
+	}
+	return c
+}
+
+func (t *RBTree) blackEdgesToMax() int {
+	n := t.root
+	var c int
+	for ; n.right != nil; n = n.right {
+		if n.black {
+			c++
+		}
+	}
+	return c
 }

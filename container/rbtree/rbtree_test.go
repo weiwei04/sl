@@ -147,13 +147,13 @@ func TestRBTree_InsertUnqiue(t *testing.T) {
 			}
 		}
 		if tree.Size() != c.DistinctCount {
-			t.Errorf("case:", c.Name, ", tree.Size expect:", c.DistinctCount, ", got:", tree.Size())
+			t.Error("case:", c.Name, ", tree.Size expect:", c.DistinctCount, ", got:", tree.Size())
 		}
 		if tree.Find(c.ExpectExist) == nil {
-			t.Errorf("case:", c.Name, "expect exist:", c.ExpectExist, ", got: 404")
+			t.Error("case:", c.Name, "expect exist:", c.ExpectExist, ", got: 404")
 		}
 		if tree.Find(c.ExpectNotExist) != nil {
-			t.Errorf("case:", c.Name, "expect not exist:", c.ExpectExist, ", got:",
+			t.Error("case:", c.Name, "expect not exist:", c.ExpectExist, ", got:",
 				tree.Find(c.ExpectNotExist).Value().(int))
 		}
 	}

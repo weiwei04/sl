@@ -4,51 +4,8 @@ type node struct {
 	parent      *node
 	left, right *node
 	e           Element
-}
-
-func insertUnique(root **node, comp CompareFunc, e Element) (*node, bool) {
-	var (
-		n      = root
-		parent *node
-	)
-	for *n != nil {
-		equal := comp(e.Key(), (*n).e.Key())
-		parent = *n
-		if equal < 0 {
-			n = &((*n).left)
-		} else if equal > 0 {
-			n = &((*n).right)
-		} else {
-			return nil, false
-		}
-	}
-	*n = &node{
-		parent: parent,
-		e:      e,
-	}
-	// TODO: rebalance
-	return *n, true
-}
-
-func insertEqual(root **node, comp CompareFunc, e Element) *node {
-	var (
-		n      = root
-		parent *node
-	)
-	for *n != nil {
-		parent = *n
-		if comp(e.Key(), (*n).e.Key()) < 0 {
-			n = &((*n).left)
-		} else {
-			n = &((*n).right)
-		}
-	}
-	*n = &node{
-		parent: parent,
-		e:      e,
-	}
-	// TODO: rebalance
-	return *n
+	// for new node, the color will always be red
+	black bool
 }
 
 func search(n *node, comp CompareFunc, key interface{}) *node {
@@ -110,4 +67,46 @@ func remove(root *node, n *node) *node {
 		n.parent.right = subTree
 	}
 	return root
+}
+
+func isRed(n *node) bool {
+	if n == nil {
+		return false
+	}
+	return !n.black
+}
+
+func rotateLeft(n *node) *node {
+	x := n.right
+	n.right = x.left
+	if x.left != nil {
+		x.left.parent = n
+	}
+	x.left = n
+	x.parent = n.parent
+	n.parent = x
+	x.black = n.black
+	n.black = false
+	return x
+}
+
+func rotateRight(n *node) *node {
+	x := n.left
+	n.left = x.right
+	if x.right != nil {
+		x.right.parent = n
+	}
+	x.right = n
+	x.parent = n.parent
+	n.parent = x
+	x.black = n.black
+	n.black = false
+	return x
+}
+
+func flipColor(n *node) *node {
+	n.left.black = true
+	n.right.black = true
+	n.black = false
+	return n
 }
